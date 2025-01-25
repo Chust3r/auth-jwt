@@ -1,0 +1,14 @@
+{
+  "name": "auth-jwt",
+  "scripts": {
+    "dev": "bun run --hot app.ts"
+  },
+  "dependencies": {
+    "argon2": "^0.41.1",
+    "fast-jwt": "^5.0.5",
+    "hono": "^4.6.18"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
