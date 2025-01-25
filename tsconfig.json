@@ -5,7 +5,7 @@
 		"jsxImportSource": "hono/jsx",
 		"baseUrl": "./",
 		"paths": {
-			"~api": ["./api/routes.ts"],
+			"~api": ["./src/api/routes"],
 			"~actions/*": ["./actions/*"],
 			"~lib/*": ["./lib/*"]
 		}
