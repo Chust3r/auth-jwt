@@ -3,11 +3,13 @@
 		"strict": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
-		"baseUrl": "./",
+		"baseUrl": "./src",
 		"paths": {
-			"~api": ["./src/api/routes"],
-			"~actions/*": ["./actions/*"],
-			"~lib/*": ["./lib/*"]
+			"~api": ["api/routes"],
+			"~actions/*": ["actions/*"],
+			"~lib/*": ["lib/*"],
+			"~db": ["lib/db.ts"],
+			"~types": ["types.ts"]
 		}
 	}
 }
