@@ -1,5 +1,5 @@
 import { defineConfig } from 'drizzle-kit'
-import { env } from 'src/lib/consts'
+import { env } from '~lib/consts'
 
 export default defineConfig({
 	dialect: 'sqlite',

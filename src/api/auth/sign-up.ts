@@ -1,6 +1,9 @@
 import { Hono } from 'hono'
+import { setCookie } from 'hono/cookie'
+import { createToken } from '~actions/tokens'
 import { createUser, getUserByEmail } from '~actions/users'
 import { errorResponse, successResponse } from '~lib/response'
+import { createAccessToken, createRefreshToken } from '~lib/tokens'
 import { SignUpSchema } from '~lib/validation'
 
 export const signUp = new Hono()
@@ -15,13 +18,30 @@ signUp.post('/', async (c) => {
 			return c.json(errorResponse(error.formErrors.fieldErrors), 400)
 		}
 
-		const user = await getUserByEmail(data.email)
+		const exists = await getUserByEmail(data.email)
 
-		if (user) return c.json(errorResponse(null, 'Email already exists'), 400)
+		if (exists)
+			return c.json(errorResponse(null, 'Email already exists'), 400)
 
-		const newUser = await createUser(data)
+		const user = await createUser(data)
 
-		return c.json(successResponse(newUser), 201)
+		const acccessToken = createAccessToken(user.id)
+
+		const refreshToken = createRefreshToken(user.id, user.device.deviceId)
+
+		const token = await createToken({
+			userId: user.id,
+			deviceId: user.device.id,
+			refreshToken,
+		})
+
+		setCookie(c, 'refresh_token', token, {
+			httpOnly: true,
+			sameSite: 'Lax',
+			secure: true,
+		})
+
+		return c.json(successResponse({ acccess_token: acccessToken }), 201)
 	} catch (e) {
 		if (e instanceof Error) {
 			console.error(e.message)

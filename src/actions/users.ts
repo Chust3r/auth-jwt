@@ -28,12 +28,12 @@ export const createUser = async (data: UserWithDeviceId) => {
 				createdAt: users.createdAt,
 			})
 
-		await createDevice({
+		const device = await createDevice({
 			userId: user[0].id,
 			deviceId: data.deviceId,
 		})
 
-		return user
+		return { ...user[0], device }
 	} catch (e) {
 		throw new Error('[ACTIONS:USERS:GET_BY_EMAIL]')
 	}

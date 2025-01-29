@@ -42,7 +42,7 @@ export const tokens = table('tokens', (t) => ({
 		.notNull(),
 	refreshToken: t.text().notNull(),
 	createdAt: t.text().$defaultFn(() => new Date().toISOString()),
-	expiresAt: t.text().notNull(),
+	updatedAt: t.text().$onUpdateFn(() => new Date().toISOString()),
 }))
 
 export const usersRelations = relations(users, ({ many }) => ({

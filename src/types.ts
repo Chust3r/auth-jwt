@@ -1,5 +1,5 @@
 import type { InferInsertModel } from 'drizzle-orm'
-import type { devices, users } from '~lib/schema'
+import type { devices, tokens, users } from '~lib/schema'
 
 export interface ErrorResponse {
 	error: string
@@ -18,3 +18,5 @@ export type User = InferInsertModel<typeof users>
 export type UserWithDeviceId = User & { deviceId: string }
 
 export type Device = InferInsertModel<typeof devices>
+
+export type Token = InferInsertModel<typeof tokens>
