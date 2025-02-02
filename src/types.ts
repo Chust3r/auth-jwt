@@ -13,6 +13,12 @@ export interface SuccessResponse<T> {
 	data: T
 }
 
+export interface Payload {
+	sub: string
+	device: string
+	session: string
+}
+
 export type User = InferInsertModel<typeof users>
 
 export type UserWithDeviceId = User & { deviceId: string }

@@ -1,7 +1,8 @@
 import { verify } from 'argon2'
 import { Hono } from 'hono'
 import { setCookie } from 'hono/cookie'
-import { getOrCreateDeviceByUserId } from '~actions/devices'
+import { getOrCreateDevice } from '~actions/devices'
+import { getOrCreateSession } from '~actions/sessions'
 import { createToken } from '~actions/tokens'
 import { getUserByEmail } from '~actions/users'
 import { errorResponse, successResponse } from '~lib/response'
@@ -32,17 +33,27 @@ signIn.post('/', async (c) => {
 			return c.json(errorResponse(null, 'Unauthorized'), 404)
 		}
 
-		const device = await getOrCreateDeviceByUserId(user.id, data.deviceId)
+		const device = await getOrCreateDevice(data.deviceId)
 
-		const acccessToken = createAccessToken(user.id)
+		const session = await getOrCreateSession(user.id, device.id)
 
-		const refreshToken = createRefreshToken(user.id, device.deviceId)
+		const payload = {
+			sub: user.id,
+			device: device.deviceId,
+			session: session.id,
+		}
+
+		const acccessToken = createAccessToken(payload)
+
+		const refreshToken = createRefreshToken(payload)
 
 		const token = await createToken({
 			userId: user.id,
 			deviceId: device.id,
-			refreshToken,
+			value: refreshToken,
 		})
+
+		console.log(token)
 
 		setCookie(c, 'refresh_token', token, {
 			httpOnly: true,

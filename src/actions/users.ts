@@ -2,7 +2,6 @@ import { hash } from 'argon2'
 import { db } from '~db'
 import { users } from '~lib/schema'
 import type { UserWithDeviceId } from '~types'
-import { createDevice } from './devices'
 
 export const getUserByEmail = async (email: string) => {
 	try {
@@ -28,12 +27,7 @@ export const createUser = async (data: UserWithDeviceId) => {
 				createdAt: users.createdAt,
 			})
 
-		const device = await createDevice({
-			userId: user[0].id,
-			deviceId: data.deviceId,
-		})
-
-		return { ...user[0], device }
+		return user[0]
 	} catch (e) {
 		throw new Error('[ACTIONS:USERS:GET_BY_EMAIL]')
 	}

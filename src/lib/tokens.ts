@@ -1,4 +1,5 @@
 import { createSigner } from 'fast-jwt'
+import type { Payload } from '~types'
 import { env } from './consts'
 
 const accessSigner = createSigner({
@@ -13,15 +14,10 @@ const refreshSigner = createSigner({
 	expiresIn: env.REFRESH_EXPIRES_IN,
 })
 
-export const createAccessToken = (userId: string) => {
-	return accessSigner({
-		sub: userId,
-	})
+export const createAccessToken = (payload: Payload) => {
+	return accessSigner(payload)
 }
 
-export const createRefreshToken = (userId: string, deviceId: string) => {
-	return refreshSigner({
-		sub: userId,
-		deviceId,
-	})
+export const createRefreshToken = (payload: Payload) => {
+	return refreshSigner(payload)
 }

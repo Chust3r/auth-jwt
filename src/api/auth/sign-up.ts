@@ -1,5 +1,7 @@
 import { Hono } from 'hono'
 import { setCookie } from 'hono/cookie'
+import { getOrCreateDevice } from '~actions/devices'
+import { getOrCreateSession } from '~actions/sessions'
 import { createToken } from '~actions/tokens'
 import { createUser, getUserByEmail } from '~actions/users'
 import { errorResponse, successResponse } from '~lib/response'
@@ -24,14 +26,24 @@ signUp.post('/', async (c) => {
 
 		const user = await createUser(data)
 
-		const acccessToken = createAccessToken(user.id)
+		const device = await getOrCreateDevice(data.deviceId)
 
-		const refreshToken = createRefreshToken(user.id, user.device.deviceId)
+		const session = await getOrCreateSession(user.id, device.id)
+
+		const payload = {
+			sub: user.id,
+			device: device.deviceId,
+			session: session.id,
+		}
+
+		const acccessToken = createAccessToken(payload)
+
+		const refreshToken = createRefreshToken(payload)
 
 		const token = await createToken({
 			userId: user.id,
-			deviceId: user.device.id,
-			refreshToken,
+			deviceId: device.id,
+			value: refreshToken,
 		})
 
 		setCookie(c, 'refresh_token', token, {

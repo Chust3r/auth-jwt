@@ -17,14 +17,10 @@ export const createDevice = async (data: Device) => {
 	}
 }
 
-export const getOrCreateDeviceByUserId = async (
-	userId: string,
-	deviceId: string,
-) => {
+export const getOrCreateDevice = async (deviceId: string) => {
 	try {
 		const device = await db.query.devices.findFirst({
-			where: (d, { eq, and }) =>
-				and(eq(d.userId, userId), eq(d.deviceId, deviceId)),
+			where: (d, { eq }) => eq(d.deviceId, deviceId),
 		})
 
 		if (device) {
@@ -40,7 +36,6 @@ export const getOrCreateDeviceByUserId = async (
 		}
 
 		const newDevice = await createDevice({
-			userId,
 			deviceId,
 		})
 
