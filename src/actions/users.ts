@@ -1,7 +1,7 @@
-import type { UserWithDeviceId } from '~types'
+import { hash } from 'argon2'
 import { db } from '~db'
 import { users } from '~lib/schema'
-import { hash } from 'argon2'
+import type { UserWithDeviceId } from '~types'
 import { createDevice } from './devices'
 
 export const getUserByEmail = async (email: string) => {

@@ -2,7 +2,7 @@ import type { ErrorResponse, SuccessResponse } from '~types'
 
 export const errorResponse = (
 	errors: Record<string, unknown> | null = null,
-	error = 'Invalid Request'
+	error = 'Invalid Request',
 ): ErrorResponse => ({
 	error,
 	success: false,

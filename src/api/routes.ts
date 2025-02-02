@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
-import { signUp } from './auth/sign-up'
 import { signIn } from './auth/sign-in'
+import { signUp } from './auth/sign-up'
 
 export const api = new Hono().basePath('/api')
 

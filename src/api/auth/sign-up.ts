@@ -20,8 +20,7 @@ signUp.post('/', async (c) => {
 
 		const exists = await getUserByEmail(data.email)
 
-		if (exists)
-			return c.json(errorResponse(null, 'Email already exists'), 400)
+		if (exists) return c.json(errorResponse(null, 'Email already exists'), 400)
 
 		const user = await createUser(data)
 

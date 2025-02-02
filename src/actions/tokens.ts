@@ -1,6 +1,6 @@
-import type { Token } from '~types'
 import { db } from '~db'
 import { tokens } from '~lib/schema'
+import type { Token } from '~types'
 
 export const createToken = async (data: Token) => {
 	try {
@@ -11,7 +11,7 @@ export const createToken = async (data: Token) => {
 
 		return token[0].id
 	} catch (e) {
-        console.log(e)
+		console.log(e)
 		throw new Error('[ACTIONS:TOKENS:CREATE]')
 	}
 }

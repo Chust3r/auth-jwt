@@ -1,6 +1,12 @@
 import 'dotenv/config'
 
-const { DB_URL, JWT_SECRET, REFRESH_SECRET,JWT_EXPIRES_IN, REFRESH_EXPIRES_IN } = process.env
+const {
+	DB_URL,
+	JWT_SECRET,
+	REFRESH_SECRET,
+	JWT_EXPIRES_IN,
+	REFRESH_EXPIRES_IN,
+} = process.env
 
 export const env = {
 	DB_URL: DB_URL ?? 'file:./db.sqlite',
