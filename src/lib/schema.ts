@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { relations } from 'drizzle-orm'
 import { sqliteTable as table } from 'drizzle-orm/sqlite-core'
 import { nanoid } from 'nanoid'
@@ -9,8 +10,8 @@ export const users = table('users', (t) => ({
 		.$defaultFn(() => nanoid()),
 	email: t.text().unique().notNull(),
 	password: t.text().notNull(),
-	createdAt: t.text().$defaultFn(() => new Date().toISOString()),
-	updatedAt: t.text().$onUpdateFn(() => new Date().toISOString()),
+	createdAt: t.text().$defaultFn(() => dayjs().format()),
+	updatedAt: t.text().$onUpdateFn(() => dayjs().format()),
 }))
 
 export const devices = table('devices', (t) => ({
@@ -23,8 +24,8 @@ export const devices = table('devices', (t) => ({
 		.references(() => users.id, { onDelete: 'cascade' })
 		.notNull(),
 	deviceId: t.text().notNull(),
-	createdAt: t.text().$defaultFn(() => new Date().toISOString()),
-	lastUsedAt: t.text().$defaultFn(() => new Date().toISOString()),
+	createdAt: t.text().$defaultFn(() => dayjs().format()),
+	lastUsedAt: t.text().$defaultFn(() => dayjs().format()),
 }))
 
 export const tokens = table('tokens', (t) => ({
@@ -41,8 +42,8 @@ export const tokens = table('tokens', (t) => ({
 		.references(() => devices.id, { onDelete: 'cascade' })
 		.notNull(),
 	refreshToken: t.text().notNull(),
-	createdAt: t.text().$defaultFn(() => new Date().toISOString()),
-	updatedAt: t.text().$onUpdateFn(() => new Date().toISOString()),
+	createdAt: t.text().$defaultFn(() => dayjs().format()),
+	updatedAt: t.text().$onUpdateFn(() => dayjs().format()),
 }))
 
 export const usersRelations = relations(users, ({ many }) => ({

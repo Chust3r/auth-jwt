@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { eq } from 'drizzle-orm'
 import { db } from '~db'
 import { devices } from '~lib/schema'
@@ -16,8 +17,6 @@ export const createDevice = async (data: Device) => {
 	}
 }
 
-//→ MUST BE GET OR CREATE DEVICE BY USER ID, IF EXIST THEN RETURN BUT UPDATE LAST USED
-
 export const getOrCreateDeviceByUserId = async (
 	userId: string,
 	deviceId: string,
@@ -32,7 +31,7 @@ export const getOrCreateDeviceByUserId = async (
 			const updatedDevice = await db
 				.update(devices)
 				.set({
-					lastUsedAt: new Date().toISOString(),
+					lastUsedAt: dayjs().format(),
 				})
 				.where(eq(devices.id, device.id))
 				.returning({ deviceId: devices.deviceId, id: devices.id })

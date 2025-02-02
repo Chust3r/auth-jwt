@@ -10,6 +10,8 @@
 			"~lib/*": ["lib/*"],
 			"~db": ["lib/db.ts"],
 			"~types": ["types.ts"]
-		}
+		},
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true
 	}
 }
