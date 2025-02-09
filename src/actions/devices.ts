@@ -9,7 +9,7 @@ export const createDevice = async (data: Device) => {
 		const device = await db
 			.insert(devices)
 			.values(data)
-			.returning({ deviceId: devices.deviceId, id: devices.id })
+			.returning({ device_id: devices.device_id, id: devices.id })
 
 		return device[0]
 	} catch (e) {
@@ -17,10 +17,10 @@ export const createDevice = async (data: Device) => {
 	}
 }
 
-export const getOrCreateDevice = async (deviceId: string) => {
+export const getOrCreateDevice = async (device_id: string) => {
 	try {
 		const device = await db.query.devices.findFirst({
-			where: (d, { eq }) => eq(d.deviceId, deviceId),
+			where: (d, { eq }) => eq(d.device_id, device_id),
 		})
 
 		if (device) {
@@ -30,13 +30,13 @@ export const getOrCreateDevice = async (deviceId: string) => {
 					lastUsedAt: dayjs().format(),
 				})
 				.where(eq(devices.id, device.id))
-				.returning({ deviceId: devices.deviceId, id: devices.id })
+				.returning({ device_id: devices.device_id, id: devices.id })
 
 			return updatedDevice[0]
 		}
 
 		const newDevice = await createDevice({
-			deviceId,
+			device_id,
 		})
 
 		return newDevice

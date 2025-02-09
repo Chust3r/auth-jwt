@@ -19,7 +19,7 @@ export const devices = table('devices', (t) => ({
 		.text()
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
-	deviceId: t.text().notNull(),
+	device_id: t.text().notNull(),
 	createdAt: t.text().$defaultFn(() => time().toISOString()),
 	lastUsedAt: t.text().$defaultFn(() => time().toISOString()),
 }))
@@ -31,11 +31,11 @@ export const tokens = table(
 			.text()
 			.primaryKey()
 			.$defaultFn(() => nanoid()),
-		userId: t
+		user_id: t
 			.text()
 			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull(),
-		deviceId: t
+		device_id: t
 			.text()
 			.references(() => devices.id, { onDelete: 'cascade' })
 			.notNull(),
@@ -43,7 +43,7 @@ export const tokens = table(
 		createdAt: t.text().$defaultFn(() => time().toISOString()),
 		updatedAt: t.text().$onUpdateFn(() => time().toISOString()),
 	}),
-	(t) => [uniqueIndex('tokens-user-device-index').on(t.userId, t.deviceId)]
+	(t) => [uniqueIndex('tokens-user-device-index').on(t.user_id, t.device_id)],
 )
 
 export const sessions = table(
@@ -53,18 +53,18 @@ export const sessions = table(
 			.text()
 			.primaryKey()
 			.$defaultFn(() => nanoid()),
-		userId: t
+		user_id: t
 			.text()
 			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull(),
-		deviceId: t
+		device_id: t
 			.text()
 			.references(() => devices.id, { onDelete: 'cascade' })
 			.notNull(),
 		createdAt: t.text().$defaultFn(() => time().toISOString()),
 		lastUsedAt: t.text().$defaultFn(() => time().toISOString()),
 	}),
-	(t) => [uniqueIndex('sessions-user-device-index').on(t.userId, t.deviceId)]
+	(t) => [uniqueIndex('sessions-user-device-index').on(t.user_id, t.device_id)],
 )
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -78,12 +78,12 @@ export const devicesRelations = relations(devices, ({ many }) => ({
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
 	user: one(users, {
-		fields: [tokens.userId],
+		fields: [tokens.user_id],
 		references: [users.id],
 		relationName: 'tokens-user',
 	}),
 	device: one(devices, {
-		fields: [tokens.deviceId],
+		fields: [tokens.device_id],
 		references: [devices.id],
 		relationName: 'tokens-device',
 	}),
@@ -91,12 +91,12 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
 	user: one(users, {
-		fields: [sessions.userId],
+		fields: [sessions.user_id],
 		references: [users.id],
 		relationName: 'sessions-user',
 	}),
 	device: one(devices, {
-		fields: [sessions.deviceId],
+		fields: [sessions.device_id],
 		references: [devices.id],
 		relationName: 'sessions-device',
 	}),

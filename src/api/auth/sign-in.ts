@@ -39,7 +39,7 @@ signIn.post('/', async (c) => {
 
 		const payload = {
 			sub: user.id,
-			device: device.deviceId,
+			device: device.id,
 			session: session.id,
 		}
 
@@ -48,8 +48,8 @@ signIn.post('/', async (c) => {
 		const refreshToken = createRefreshToken(payload)
 
 		const token = await createToken({
-			userId: user.id,
-			deviceId: device.id,
+			user_id: user.id,
+			device_id: device.id,
 			value: refreshToken,
 		})
 

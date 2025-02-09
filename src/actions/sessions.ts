@@ -2,19 +2,22 @@ import dayjs from 'dayjs'
 import { db } from '~db'
 import { sessions } from '~lib/schema'
 
-export const getOrCreateSession = async (userId: string, deviceId: string) => {
+export const getOrCreateSession = async (
+	user_id: string,
+	device_id: string,
+) => {
 	try {
 		const session = await db
 			.insert(sessions)
 			.values({
-				userId,
-				deviceId,
+				user_id,
+				device_id,
 			})
 			.onConflictDoUpdate({
 				set: {
 					lastUsedAt: dayjs().format(),
 				},
-				target: [sessions.userId, sessions.deviceId],
+				target: [sessions.user_id, sessions.device_id],
 			})
 			.returning()
 

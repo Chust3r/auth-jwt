@@ -1,14 +1,14 @@
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 import { Hono } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
-import { deleteToken, getToken } from '~actions/tokens'
+import { getToken, revokeToken } from '~actions/tokens'
 import { errorResponse, successResponse } from '~lib/response'
 import {
 	createAccessToken,
 	createRefreshToken,
 	verifyRefreshToken,
 } from '~lib/tokens'
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
 
 dayjs.extend(duration)
 
@@ -23,11 +23,13 @@ refresh.post('/', async (c) => {
 		}
 
 		const decoded = verifyRefreshToken(refreshToken)
+
 		if (!decoded) {
 			return c.json(errorResponse(null, "Refresh token isn't valid"), 403)
 		}
 
-		const storedToken = await getToken(refreshToken)
+		const storedToken = await getToken(refreshToken, decoded.device)
+
 		if (!storedToken) {
 			return c.json(errorResponse(null, 'Refresh token was revoked'), 403)
 		}
@@ -42,16 +44,14 @@ refresh.post('/', async (c) => {
 		const currentTime = dayjs()
 		const remainingTime = expiresAt.diff(currentTime, 'hours', true)
 
-		let newRefreshToken = refreshToken
-
 		if (remainingTime < 1) {
-			newRefreshToken = createRefreshToken(payload)
+			const newRefreshToken = createRefreshToken(payload)
 
-			const deletedToken = await deleteToken(refreshToken, decoded.sub)
+			const deletedToken = await revokeToken(refreshToken, decoded.sub)
 			if (!deletedToken) {
 				return c.json(
 					errorResponse(null, 'Error while revoking refresh token'),
-					500
+					500,
 				)
 			}
 

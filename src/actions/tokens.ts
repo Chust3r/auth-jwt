@@ -13,7 +13,7 @@ export const createToken = async (data: Token) => {
 				set: {
 					updatedAt: dayjs().format(),
 				},
-				target: [tokens.userId, tokens.deviceId],
+				target: [tokens.user_id, tokens.device_id],
 			})
 			.returning({ value: tokens.value })
 
@@ -24,10 +24,11 @@ export const createToken = async (data: Token) => {
 	}
 }
 
-export const getToken = async (value: string) => {
+export const getToken = async (value: string, device_id: string) => {
 	try {
 		const token = await db.query.tokens.findFirst({
-			where: (t, { eq }) => eq(t.value, value),
+			where: (t, { eq, and }) =>
+				and(eq(t.value, value), eq(t.device_id, device_id)),
 		})
 
 		return token
@@ -37,11 +38,11 @@ export const getToken = async (value: string) => {
 	}
 }
 
-export const deleteToken = async (value: string, userId: string) => {
+export const revokeToken = async (value: string, user_id: string) => {
 	try {
 		const token = await db
 			.delete(tokens)
-			.where(and(eq(tokens.value, value), eq(tokens.userId, userId)))
+			.where(and(eq(tokens.value, value), eq(tokens.user_id, user_id)))
 
 		return token
 	} catch (e) {

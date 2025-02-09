@@ -1,7 +1,7 @@
 import { hash } from 'argon2'
 import { db } from '~db'
 import { users } from '~lib/schema'
-import type { UserWithDeviceId } from '~types'
+import type { User } from '~types'
 
 export const getUserByEmail = async (email: string) => {
 	try {
@@ -13,13 +13,15 @@ export const getUserByEmail = async (email: string) => {
 	}
 }
 
-export const createUser = async (data: UserWithDeviceId) => {
+export const createUser = async (data: User) => {
 	try {
+		const password = await hash(data.password)
+
 		const user = await db
 			.insert(users)
 			.values({
 				email: data.email,
-				password: await hash(data.password),
+				password,
 			})
 			.returning({
 				id: users.id,

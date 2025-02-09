@@ -26,8 +26,6 @@ export interface VerifyPayload extends Payload {
 
 export type User = InferInsertModel<typeof users>
 
-export type UserWithDeviceId = User & { deviceId: string }
-
 export type Device = InferInsertModel<typeof devices>
 
 export type Token = InferInsertModel<typeof tokens>
