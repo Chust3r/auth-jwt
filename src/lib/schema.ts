@@ -1,10 +1,6 @@
-import dayjs from 'dayjs'
+import time from 'dayjs'
 import { relations } from 'drizzle-orm'
-import {
-	index,
-	sqliteTable as table,
-	uniqueIndex,
-} from 'drizzle-orm/sqlite-core'
+import { sqliteTable as table, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { nanoid } from 'nanoid'
 
 export const users = table('users', (t) => ({
@@ -14,8 +10,8 @@ export const users = table('users', (t) => ({
 		.$defaultFn(() => nanoid()),
 	email: t.text().unique().notNull(),
 	password: t.text().notNull(),
-	createdAt: t.text().$defaultFn(() => dayjs().toISOString()),
-	updatedAt: t.text().$onUpdateFn(() => dayjs().toISOString()),
+	createdAt: t.text().$defaultFn(() => time().toISOString()),
+	updatedAt: t.text().$onUpdateFn(() => time().toISOString()),
 }))
 
 export const devices = table('devices', (t) => ({
@@ -24,8 +20,8 @@ export const devices = table('devices', (t) => ({
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	deviceId: t.text().notNull(),
-	createdAt: t.text().$defaultFn(() => dayjs().toISOString()),
-	lastUsedAt: t.text().$defaultFn(() => dayjs().toISOString()),
+	createdAt: t.text().$defaultFn(() => time().toISOString()),
+	lastUsedAt: t.text().$defaultFn(() => time().toISOString()),
 }))
 
 export const tokens = table(
@@ -44,10 +40,10 @@ export const tokens = table(
 			.references(() => devices.id, { onDelete: 'cascade' })
 			.notNull(),
 		value: t.text().notNull(),
-		createdAt: t.text().$defaultFn(() => dayjs().toISOString()),
-		updatedAt: t.text().$onUpdateFn(() => dayjs().toISOString()),
+		createdAt: t.text().$defaultFn(() => time().toISOString()),
+		updatedAt: t.text().$onUpdateFn(() => time().toISOString()),
 	}),
-	(t) => [uniqueIndex('tokens-user-device-index').on(t.userId, t.deviceId)],
+	(t) => [uniqueIndex('tokens-user-device-index').on(t.userId, t.deviceId)]
 )
 
 export const sessions = table(
@@ -65,10 +61,10 @@ export const sessions = table(
 			.text()
 			.references(() => devices.id, { onDelete: 'cascade' })
 			.notNull(),
-		createdAt: t.text().$defaultFn(() => dayjs().toISOString()),
-		lastUsedAt: t.text().$defaultFn(() => dayjs().toISOString()),
+		createdAt: t.text().$defaultFn(() => time().toISOString()),
+		lastUsedAt: t.text().$defaultFn(() => time().toISOString()),
 	}),
-	(t) => [uniqueIndex('sessions-user-device-index').on(t.userId, t.deviceId)],
+	(t) => [uniqueIndex('sessions-user-device-index').on(t.userId, t.deviceId)]
 )
 
 export const usersRelations = relations(users, ({ many }) => ({

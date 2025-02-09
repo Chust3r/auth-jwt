@@ -53,8 +53,6 @@ signIn.post('/', async (c) => {
 			value: refreshToken,
 		})
 
-		console.log(token)
-
 		setCookie(c, 'refresh_token', token, {
 			httpOnly: true,
 			sameSite: 'Lax',

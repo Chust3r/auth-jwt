@@ -1,5 +1,5 @@
-import { createSigner } from 'fast-jwt'
-import type { Payload } from '~types'
+import { createSigner, createVerifier } from 'fast-jwt'
+import type { Payload, VerifyPayload } from '~types'
 import { env } from './consts'
 
 const accessSigner = createSigner({
@@ -20,4 +20,22 @@ export const createAccessToken = (payload: Payload) => {
 
 export const createRefreshToken = (payload: Payload) => {
 	return refreshSigner(payload)
+}
+
+export const verifyAccessToken = (token: string): VerifyPayload => {
+	const v = createVerifier({
+		algorithms: ['HS256'],
+		key: env.JWT_SECRET,
+	})
+
+	return v(token)
+}
+
+export const verifyRefreshToken = (token: string): VerifyPayload => {
+	const v = createVerifier({
+		algorithms: ['HS256'],
+		key: env.REFRESH_SECRET,
+	})
+
+	return v(token)
 }

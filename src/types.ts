@@ -19,6 +19,11 @@ export interface Payload {
 	session: string
 }
 
+export interface VerifyPayload extends Payload {
+	iat: number
+	exp: number
+}
+
 export type User = InferInsertModel<typeof users>
 
 export type UserWithDeviceId = User & { deviceId: string }
