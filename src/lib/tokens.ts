@@ -22,20 +22,28 @@ export const createRefreshToken = (payload: Payload) => {
 	return refreshSigner(payload)
 }
 
-export const verifyAccessToken = (token: string): VerifyPayload => {
-	const v = createVerifier({
-		algorithms: ['HS256'],
-		key: env.JWT_SECRET,
-	})
+export const verifyAccessToken = (token: string): VerifyPayload | null => {
+	try {
+		const v = createVerifier({
+			algorithms: ['HS256'],
+			key: env.JWT_SECRET,
+		})
 
-	return v(token)
+		return v(token)
+	} catch (e) {
+		return null
+	}
 }
 
-export const verifyRefreshToken = (token: string): VerifyPayload => {
-	const v = createVerifier({
-		algorithms: ['HS256'],
-		key: env.REFRESH_SECRET,
-	})
+export const verifyRefreshToken = (token: string): VerifyPayload | null => {
+	try {
+		const v = createVerifier({
+			algorithms: ['HS256'],
+			key: env.REFRESH_SECRET,
+		})
 
-	return v(token)
+		return v(token)
+	} catch (e) {
+		return null
+	}
 }
