@@ -9,7 +9,8 @@
 			"~actions/*": ["actions/*"],
 			"~lib/*": ["lib/*"],
 			"~db": ["lib/db.ts"],
-			"~types": ["types.ts"]
+			"~types": ["types.ts"],
+			"~middlwares/*": ["middlewares/*"]
 		},
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true

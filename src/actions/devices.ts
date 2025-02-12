@@ -44,3 +44,15 @@ export const getOrCreateDevice = async (device_id: string) => {
 		throw new Error('[ACTIONS:DEVICES:GET_OR_CREATE_BY_USER_ID]')
 	}
 }
+
+export const getDeviceById = async (id: string) => {
+	try {
+		const device = await db.query.devices.findFirst({
+			where: (d, { eq }) => eq(d.id, id),
+		})
+
+		return device
+	} catch (e) {
+		throw new Error('[ACTIONS:DEVICES:GET_DEVICE_BY_ID]')
+	}
+}
