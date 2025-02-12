@@ -1,10 +1,10 @@
 import { Hono } from 'hono'
 import { me } from './me'
 import { refresh } from './refresh'
+import { sessions } from './sessions'
 import { signIn } from './sign-in'
 import { signOut } from './sign-out'
 import { signUp } from './sign-up'
-import { sessions } from './sessions'
 
 export const auth = new Hono()
 
