@@ -2,69 +2,78 @@
 
 ## 📌 Overview
 
-This API provides a robust authentication system using JWT (JSON Web Tokens) with access and refresh tokens. Users can log in from multiple devices, and each session is tracked securely.
+This API provides a robust authentication system using JWT (JSON Web Tokens) with access and refresh tokens. Users can log in from multiple devices, and each session is tracked securely. The system offers features like account registration, sign-in, session management, and session revocation.
 
 ## 🚀 Authentication Flow
 
-1. **Sign Up (`POST /auth/signup`)**
-   -  Users create an account with an email and password.
-2. **Sign In (`POST /auth/signin`)**
+### 1. **Sign Up** (`POST /auth/signup`)
 
-   -  Users authenticate and receive an access token and a refresh token.
-   -  The refresh token is stored in an **HTTP-only secure cookie**.
+Users create an account with an email and password.
 
-3. **Refresh Token (`POST /auth/refresh`)**
+### 2. **Sign In** (`POST /auth/signin`)
 
-   -  Generates a new access token using the refresh token.
-   -  If the refresh token expires in **less than an hour**, a new refresh token is issued.
+-  Users authenticate and receive an **Access Token** and a **Refresh Token**.
+-  The **Refresh Token** is stored securely in an **HTTP-only cookie**.
 
-4. **Sign Out (`POST /auth/logout`)**
+### 3. **Refresh Token** (`POST /auth/refresh`)
 
-   -  Deletes the refresh token from the database and invalidates the session.
-   -  Removes the refresh token cookie.
+-  Generates a new **Access Token** using the **Refresh Token**.
+-  If the **Refresh Token** expires in **less than an hour**, a new refresh token is issued.
 
-5. **Get Current User (`GET /auth/me`)**
+### 4. **Sign Out** (`POST /auth/logout`)
 
-   -  Retrieves the authenticated user's profile based on the access token.
+-  Deletes the **Refresh Token** from the database and invalidates the session.
+-  Removes the **Refresh Token** cookie.
 
-6. **Manage Sessions (`GET /auth/sessions`)**
+### 5. **Get Current User** (`GET /auth/me`)
 
-   -  Lists all active sessions for the authenticated user.
+-  Retrieves the authenticated user's profile based on the **Access Token**.
 
-7. **Revoke a Specific Session (`POST /auth/revoke-session`)**
+### 6. **Manage Sessions** (`GET /auth/sessions`)
 
-   -  Allows users to revoke a session from a specific device.
+-  Lists all active sessions for the authenticated user.
 
-8. **Change Password (`POST /auth/change-password`)**
+### 7. **Revoke a Specific Session** (`POST /auth/revoke-session`)
 
-   -  Allows users to update their password.
+-  Allows users to revoke a session from a specific device.
 
-9. **Forgot Password (`POST /auth/forgot-password`)**
+### 8. **Change Password** (`POST /auth/change-password`)
 
-   -  Sends a password reset link via email.
+-  Allows users to update their password.
 
-10.   **Reset Password (`POST /auth/reset-password`)**
-
-      -  Resets the user's password using a secure token.
-
-11.   **Delete Account (`DELETE /auth/delete-account`)**
-      -  Permanently removes the user's account and all associated sessions.
+---
 
 ## 🔗 API Endpoints
 
-| Method | Endpoint                | Description                 |
-| ------ | ----------------------- | --------------------------- |
-| POST   | `/auth/signup`          | Register a new user         |
-| POST   | `/auth/signin`          | Log in and get tokens       |
-| POST   | `/auth/refresh`         | Get a new access token      |
-| POST   | `/auth/logout`          | Log out and revoke tokens   |
-| GET    | `/auth/me`              | Get the authenticated user  |
-| GET    | `/auth/sessions`        | Get active user sessions    |
-| POST   | `/auth/revoke-session`  | Revoke a session            |
-| POST   | `/auth/change-password` | Update user password        |
-| POST   | `/auth/forgot-password` | Request password reset      |
-| POST   | `/auth/reset-password`  | Reset password with a token |
-| DELETE | `/auth/delete-account`  | Delete user account         |
+| Method | Endpoint                | Description                          | Required Headers                                                       |
+| ------ | ----------------------- | ------------------------------------ | ---------------------------------------------------------------------- |
+| `POST` | `/auth/signup`          | Register a new user                  | None                                                                   |
+| `POST` | `/auth/signin`          | Log in and receive tokens            | None                                                                   |
+| `POST` | `/auth/refresh`         | Get a new **Access Token**           | `Authorization: Bearer <access_token>`                                 |
+| `POST` | `/auth/logout`          | Log out and revoke tokens            | `Authorization: Bearer <access_token>`                                 |
+| `GET`  | `/auth/me`              | Get the authenticated user's profile | `Authorization: Bearer <access_token>`                                 |
+| `GET`  | `/auth/sessions`        | Get active user sessions             | `Authorization: Bearer <access_token>`                                 |
+| `POST` | `/auth/revoke-session`  | Revoke a session from a device       | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
+| `POST` | `/auth/change-password` | Update user password                 | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
+
+---
+
+## 🔒 Protected Routes
+
+### **Authorization**
+
+To access protected routes, you must include the following headers:
+
+1. **Authorization Header**
+
+   -  Format: `Authorization: Bearer <access_token>`
+   -  The **Access Token** obtained during the sign-in process.
+
+2. **Device Header**
+   -  Format: `X-Device-ID: <device_id>`
+   -  The **device_id** is a unique identifier for the user's device, which can be generated when the device is first used (for example, through a device fingerprint or unique ID).
+
+---
 
 ## 🗄️ Database Models
 
@@ -108,6 +117,8 @@ This API provides a robust authentication system using JWT (JSON Web Tokens) wit
 | `createdAt` | Date   | Token creation timestamp  |
 | `updatedAt` | Date   | Last time updated         |
 
+---
+
 ## 🔄 Relationships
 
 -  A **user** can have multiple **sessions**.
@@ -117,22 +128,35 @@ This API provides a robust authentication system using JWT (JSON Web Tokens) wit
 -  A **session** is linked to a **refresh token**.
 -  A **refresh token** is linked to a specific **user** and **device**.
 
+---
+
 ## 🛠️ Technologies Used
 
--  **Hono** (Fast, small, and modern web framework for the Edge)
--  **Drizzle ORM** (TypeScript ORM for SQLite & PostgreSQL)
--  **SQLite** (Lightweight database engine)
--  **Argon2** (Secure password hashing algorithm)
--  **Fast-JWT** (High-performance JWT handling)
--  **Day.js** (Date and time manipulation)
--  **Zod** (Schema validation for TypeScript)
--  **Nanoid** (Unique ID generation)
--  **Dotenv** (Environment variable management)
+-  **Hono**: Fast, small, and modern web framework for the Edge
+-  **Drizzle ORM**: TypeScript ORM for SQLite & PostgreSQL
+-  **SQLite**: Lightweight database engine
+-  **Argon2**: Secure password hashing algorithm
+-  **Fast-JWT**: High-performance JWT handling
+-  **Day.js**: Date and time manipulation
+-  **Zod**: Schema validation for TypeScript
+-  **Nanoid**: Unique ID generation
+-  **Dotenv**: Environment variable management
+
+---
 
 ## 🔒 Security Considerations
 
-✅ **HTTP-only Secure Cookies** → Refresh tokens are stored securely to prevent XSS attacks.  
-✅ **JWT Expiration Policies** → Access tokens have short lifetimes, refresh tokens are rotated when close to expiration.  
-✅ **Session Management** → Users can revoke sessions manually.  
-✅ **Brute-force Protection** → Implement login attempt limits.  
-✅ **Password Hashing** → Store passwords securely using bcrypt.
+-  ✅ **HTTP-only Secure Cookies**: Refresh tokens are stored securely to prevent XSS attacks.
+-  ✅ **JWT Expiration Policies**: Access tokens have short lifetimes, refresh tokens are rotated when close to expiration.
+-  ✅ **Session Management**: Users can revoke sessions manually.
+-  ✅ **Brute-force Protection**: Implement login attempt limits.
+-  ✅ **Password Hashing**: Store passwords securely using bcrypt.
+
+---
+
+## 📊 Database Diagram
+
+![Authentication System Database Model](./models.png)
+
+This diagram represents the relationships between the **Users**, **Devices**, **Sessions**, and **Tokens** in the authentication system. You can modify and expand it based on your application's needs.
+
