@@ -3,7 +3,7 @@ import { deleteToken } from './tokens'
 
 export const revokeUserSession = async (
 	session_id: string,
-	user_id: string
+	user_id: string,
 ) => {
 	try {
 		const session = await getSession(session_id, user_id)

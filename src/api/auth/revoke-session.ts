@@ -30,7 +30,7 @@ revoke.delete('/:session_id', getAuth, async (c) => {
 
 		return c.json(
 			successResponse({ message: 'Session revoked successfully' }),
-			200
+			200,
 		)
 	} catch (e) {
 		if (e instanceof Error) {

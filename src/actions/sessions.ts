@@ -5,7 +5,7 @@ import { sessions } from '~lib/schema'
 
 export const getOrCreateSession = async (
 	user_id: string,
-	device_id: string
+	device_id: string,
 ) => {
 	try {
 		const session = await db
@@ -34,10 +34,7 @@ export const deleteSession = async (user_id: string, device_id: string) => {
 		const session = await db
 			.delete(sessions)
 			.where(
-				and(
-					eq(sessions.user_id, user_id),
-					eq(sessions.device_id, device_id)
-				)
+				and(eq(sessions.user_id, user_id), eq(sessions.device_id, device_id)),
 			)
 
 		return session

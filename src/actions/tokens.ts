@@ -55,9 +55,7 @@ export const deleteToken = async (user_id: string, device_id: string) => {
 	try {
 		const token = await db
 			.delete(tokens)
-			.where(
-				and(eq(tokens.user_id, user_id), eq(tokens.device_id, device_id))
-			)
+			.where(and(eq(tokens.user_id, user_id), eq(tokens.device_id, device_id)))
 
 		return token
 	} catch (e) {

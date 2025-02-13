@@ -1,11 +1,11 @@
 import { Hono } from 'hono'
 import { me } from './me'
 import { refresh } from './refresh'
+import { revoke } from './revoke-session'
 import { sessions } from './sessions'
 import { signIn } from './sign-in'
 import { signOut } from './sign-out'
 import { signUp } from './sign-up'
-import { revoke } from './revoke-session'
 
 export const auth = new Hono()
 
