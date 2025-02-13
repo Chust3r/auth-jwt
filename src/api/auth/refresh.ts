@@ -9,12 +9,13 @@ import {
 	createRefreshToken,
 	verifyRefreshToken,
 } from '~lib/tokens'
+import { getAuth } from '~middlwares/auth'
 
 dayjs.extend(duration)
 
 export const refresh = new Hono()
 
-refresh.post('/', async (c) => {
+refresh.post('/', getAuth,async (c) => {
 	try {
 		const refreshToken = getCookie(c, 'refresh_token')
 

@@ -37,7 +37,7 @@ Users create an account with an email and password.
 
 -  Allows users to revoke a session from a specific device.
 
-### 8. **Change Password** (`POST /auth/change-password`)
+### 8. **Change Password** (`PATCH /auth/change-password`)
 
 -  Allows users to update their password.
 
@@ -50,11 +50,11 @@ Users create an account with an email and password.
 | `POST` | `/auth/signup`          | Register a new user                  | None                                                                   |
 | `POST` | `/auth/signin`          | Log in and receive tokens            | None                                                                   |
 | `POST` | `/auth/refresh`         | Get a new **Access Token**           | `Authorization: Bearer <access_token>`                                 |
-| `POST` | `/auth/logout`          | Log out and revoke tokens            | `Authorization: Bearer <access_token>`                                 |
-| `GET`  | `/auth/me`              | Get the authenticated user's profile | `Authorization: Bearer <access_token>`                                 |
-| `GET`  | `/auth/sessions`        | Get active user sessions             | `Authorization: Bearer <access_token>`                                 |
+| `POST` | `/auth/logout`          | Log out and revoke tokens            | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
+| `GET`  | `/auth/me`              | Get the authenticated user's profile | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
+| `GET`  | `/auth/sessions`        | Get active user sessions             | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
 | `POST` | `/auth/revoke-session`  | Revoke a session from a device       | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
-| `POST` | `/auth/change-password` | Update user password                 | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
+| `PATCH` | `/auth/change-password` | Update user password                 | `Authorization: Bearer <access_token>` <br> `X-Device-ID: <device_id>` |
 
 ---
 
@@ -72,6 +72,17 @@ To access protected routes, you must include the following headers:
 2. **Device Header**
    -  Format: `X-Device-ID: <device_id>`
    -  The **device_id** is a unique identifier for the user's device, which can be generated when the device is first used (for example, through a device fingerprint or unique ID).
+
+### **Routes requiring both Access Token and Device ID in headers**
+
+The following routes require both the **Access Token** in the `Authorization` header and the **Device ID** in the `X-Device-ID` header:
+
+-  `GET /auth/me`
+-  `POST /auth/refresh`
+-  `POST /auth/revoke-session`
+-  `GET /auth/sessions`
+-  `POST /auth/logout`
+-  `POST /auth/change-password`
 
 ---
 
@@ -156,7 +167,6 @@ To access protected routes, you must include the following headers:
 
 ## 📊 Database Diagram
 
-![Authentication System Database Model](./models.png)
+![Authentication System Database Model](/models.svg)
 
 This diagram represents the relationships between the **Users**, **Devices**, **Sessions**, and **Tokens** in the authentication system. You can modify and expand it based on your application's needs.
-
