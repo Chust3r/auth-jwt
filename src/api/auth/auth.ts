@@ -5,6 +5,7 @@ import { sessions } from './sessions'
 import { signIn } from './sign-in'
 import { signOut } from './sign-out'
 import { signUp } from './sign-up'
+import { revoke } from './revoke-session'
 
 export const auth = new Hono()
 
@@ -14,3 +15,4 @@ auth.route('/refresh', refresh)
 auth.route('/sign-out', signOut)
 auth.route('/me', me)
 auth.route('/sessions', sessions)
+auth.route('/revoke-session', revoke)

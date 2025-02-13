@@ -1,13 +1,13 @@
 import { Hono } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
-import { deleteSession } from '~actions/sessions'
-import { revokeToken } from '~actions/tokens'
+import { revokeUserSession } from '~actions/auth'
 import { errorResponse, successResponse } from '~lib/response'
 import { verifyRefreshToken } from '~lib/tokens'
+import { getAuth } from '~middlwares/auth'
 
 export const signOut = new Hono()
 
-signOut.post('/', async (c) => {
+signOut.post('/', getAuth, async (c) => {
 	try {
 		const refreshToken = getCookie(c, 'refresh_token')
 
@@ -21,11 +21,9 @@ signOut.post('/', async (c) => {
 			return c.json(errorResponse(null, 'Invalid refresh token'), 401)
 		}
 
-		const isRevoked = await revokeToken(refreshToken, isValid.sub)
+		const isRevoked = await revokeUserSession(isValid.session, isValid.sub)
 
-		const session = await deleteSession(isValid.sub, isValid.device)
-
-		if (!isRevoked || !session) {
+		if (!isRevoked) {
 			return c.json(errorResponse(null, 'Something went wrong'), 500)
 		}
 
